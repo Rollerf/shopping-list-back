@@ -8,7 +8,6 @@ import { getLambdaDefinitions } from './lambda-config';
 
 // Types
 import { CDKContext, APIStackProps } from '../lambda-layer/types';
-import { BasePathMapping } from 'aws-cdk-lib/aws-apigateway';
 
 export class APIStack extends Stack {
   constructor(scope: Construct, id: string, props: APIStackProps, context: CDKContext) {

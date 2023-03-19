@@ -1,4 +1,4 @@
-import { APIGatewayProxyResultV2, APIGatewayProxyHandlerV2WithLambdaAuthorizer, APIGatewayAuthorizerResultContext } from 'aws-lambda';
+import { APIGatewayProxyResultV2, APIGatewayProxyHandlerV2WithLambdaAuthorizer } from 'aws-lambda';
 import * as utils from '/opt/utils';
 import { getItemsSchema, validateAPISchema } from '/opt/schema-definitions';
 import { CustomAuth, GetItemsParams } from '/opt/types';
