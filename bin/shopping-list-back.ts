@@ -16,9 +16,8 @@ export const getContext = async (app: cdk.App): Promise<CDKContext> => {
   return new Promise(async (resolve, reject) => {
     try {
       const currentBranch = await gitBranch();
-
-      const environment = app.node.tryGetContext('environments').find((e: any) => e.branchName === currentBranch);
-
+      const defaultEnvironment = app.node.tryGetContext('environments').find((e: any) => e.branchName === 'develop');
+      const environment = app.node.tryGetContext('environments').find((e: any) => e.branchName === currentBranch) ?? defaultEnvironment;
       const globals = app.node.tryGetContext('globals');
 
       return resolve({ ...globals, ...environment });
