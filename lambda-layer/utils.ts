@@ -36,7 +36,6 @@ export const logDebug = (message: string | any, title: string | undefined = unde
   }
 };
 
-// Get API Success response
 export const apiSuccessResponse = (body: any) => {
   return new Promise<APIGatewayProxyResultV2>((resolve) => {
     resolve({
@@ -62,8 +61,7 @@ export const apiErrorResponse = (statusCode: number, error: string = 'Something 
   });
 };
 
-// Get Document Client
-export const getDDBDocClient = (): Promise<DynamoDBDocumentClient> => {
+export const getDDBDocItem = (): Promise<DynamoDBDocumentClient> => {
   return new Promise((resolve, reject) => {
     const ddbClient = new DynamoDBClient({ region: 'eu-west-3' });
     const marshallOptions = {
@@ -80,14 +78,16 @@ export const getDDBDocClient = (): Promise<DynamoDBDocumentClient> => {
   });
 };
 
-// DDb Write Item
-export const ddbWrite = (table: string, item: any): Promise<void> => {
+export const ddbWrite = (table: string, item: any, ConditionExpression: string): Promise<void> => {
   return new Promise<void>(async (resolve, reject) => {
     try {
       console.log('Writing item to DDB');
-      const ddbDocClient = await getDDBDocClient();
+      const ddbDocClient = await getDDBDocItem();
 
-      await ddbDocClient.send(new PutCommand({ TableName: table, Item: item }));
+      await ddbDocClient.send(new PutCommand({
+        TableName: table, Item: item,
+        ConditionExpression, ExpressionAttributeNames: { '#user_id': 'user_id', '#name': 'name' }
+      }));
 
       resolve();
     } catch (error) {
@@ -101,7 +101,7 @@ export const ddbDelete = (table: string, email: any): Promise<void> => {
   return new Promise<void>(async (resolve, reject) => {
     try {
       console.log('Deleting item from DDB');
-      const ddbDocClient = await getDDBDocClient();
+      const ddbDocClient = await getDDBDocItem();
 
       await ddbDocClient.send(new DeleteCommand({ TableName: table, Key: { email } }));
 

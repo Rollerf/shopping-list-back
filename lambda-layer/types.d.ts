@@ -52,9 +52,9 @@ export type AddItemBody = {
   user_id?: string;
 };
 export type UpdateItemBody = {
-  name?: string;
-  quantity?: number;
-  deleted?: boolean;
+  name: string;
+  quantity: number;
+  deleted: boolean;
   user_id?: string;
 };
 export type DeleteUserParams = {
