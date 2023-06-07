@@ -50,7 +50,7 @@ export class LambdaStack extends Stack {
     // Lambda Layer
     const lambdaLayer = new lambda.LayerVersion(this, 'lambdaLayer', {
       code: lambda.Code.fromAsset('lambda-layer'),
-      compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
+      compatibleRuntimes: [lambda.Runtime.NODEJS_18_X],
       description: `Lambda Layer for ${context.appName}`,
     });
 
