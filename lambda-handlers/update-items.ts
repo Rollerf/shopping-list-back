@@ -13,6 +13,8 @@ export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<CustomAuth> =
         let userId = event.requestContext.authorizer.lambda.userId;
         const body: UpdateItemBody = event.body ? JSON.parse(event.body) : {};
         const ConditionExpression = 'attribute_exists(#user_id) AND attribute_exists(#name)';
+        const ActualDateInSeconds = Math.floor(Date.now() / 1000);
+        const DaysInSecondsOffset = 240 * 60 * 60;
 
         // Validate Payload
         const validationResult = await validateAPISchema(updateItemSchema, body);
@@ -22,7 +24,8 @@ export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<CustomAuth> =
             name: body.name,
             quantity: body.quantity,
             user_id: userId,
-            deleted: body.deleted
+            deleted: body.deleted,
+            ttl: body.deleted ? ActualDateInSeconds + DaysInSecondsOffset : undefined
           };
 
           if (process.env.DDB_TABLE) await utils.ddbWrite(process.env.DDB_TABLE, updatedItem, ConditionExpression);
