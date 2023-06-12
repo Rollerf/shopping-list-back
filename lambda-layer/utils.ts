@@ -1,10 +1,8 @@
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { APIGatewayProxyResultV2 } from 'aws-lambda';
 
 //TODO: Este fichero utils no debe existir. Debe ser separado en varios.
 //Quitar los anys de los logs y poner los tipos correctos.
-// Logger Functions
 export const logInfo = (message: string | any, title: string | undefined = undefined): void => {
   if (typeof message === 'string') {
     title ? console.info(`${title}: ${message}`) : console.info(message);
