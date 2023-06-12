@@ -25,7 +25,7 @@ export class APIStack extends Stack {
       description: `HTTP API Demo - ${context.environment}`,
       corsPreflight: {
         allowHeaders: ['Authorization', 'Content-Type'],
-        allowMethods: [CorsHttpMethod.GET, CorsHttpMethod.POST, CorsHttpMethod.OPTIONS, CorsHttpMethod.PATCH],
+        allowMethods: [CorsHttpMethod.GET, CorsHttpMethod.PUT, CorsHttpMethod.OPTIONS],
         allowOrigins: ['*'],
       },
       defaultAuthorizer: apiAuthorizer,

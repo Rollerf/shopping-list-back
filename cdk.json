@@ -44,6 +44,10 @@
       {
         "environment": "develop",
         "branchName": "develop"
+      },
+      {
+        "environment": "production",
+        "branchName": "master"
       }
     ]
   }

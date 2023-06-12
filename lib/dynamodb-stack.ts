@@ -17,7 +17,8 @@ export class DynamoDBStack extends Stack {
       tableName: `${context.appName}-${context.environment}`,
       billingMode: ddb.BillingMode.PAY_PER_REQUEST,
       partitionKey: { name: 'user_id', type: ddb.AttributeType.STRING },
-      sortKey:{name: 'name', type: ddb.AttributeType.STRING}
+      sortKey: { name: 'name', type: ddb.AttributeType.STRING },
+      timeToLiveAttribute: 'ttl'
     });
     this.ddbTable = ddbTable;
   }

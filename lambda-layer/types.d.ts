@@ -36,6 +36,7 @@ export type Item = {
   quantity: number;
   deleted: boolean;
   user_id: string;
+  ttl?: number;
 };
 
 // User API Type Definitions

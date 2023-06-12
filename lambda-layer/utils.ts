@@ -1,9 +1,9 @@
-import { DynamoDBDocumentClient, PutCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import _ from 'lodash';
 import { APIGatewayProxyResultV2 } from 'aws-lambda';
 
 //TODO: Este fichero utils no debe existir. Debe ser separado en varios.
+//Quitar los anys de los logs y poner los tipos correctos.
 // Logger Functions
 export const logInfo = (message: string | any, title: string | undefined = undefined): void => {
   if (typeof message === 'string') {
@@ -37,32 +37,28 @@ export const logDebug = (message: string | any, title: string | undefined = unde
 };
 
 export const apiSuccessResponse = (body: any) => {
-  return new Promise<APIGatewayProxyResultV2>((resolve) => {
-    resolve({
-      statusCode: 200,
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: typeof body === 'string' ? JSON.stringify({ message: body }) : JSON.stringify(body),
-    });
+  return Promise.resolve({
+    statusCode: 200,
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: typeof body === 'string' ? JSON.stringify({ message: body }) : JSON.stringify(body),
   });
 };
 
 // Get API Error response
 export const apiErrorResponse = (statusCode: number, error: string = 'Something went wrong. Please contact administrator') => {
-  return new Promise<APIGatewayProxyResultV2>((resolve, reject) => {
-    resolve({
-      statusCode: statusCode,
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({ error }),
-    });
+  return Promise.resolve({
+    statusCode: statusCode,
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({ error }),
   });
 };
 
 export const getDDBDocItem = (): Promise<DynamoDBDocumentClient> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const ddbClient = new DynamoDBClient({ region: 'eu-west-3' });
     const marshallOptions = {
       convertEmptyValues: true,
@@ -78,36 +74,25 @@ export const getDDBDocItem = (): Promise<DynamoDBDocumentClient> => {
   });
 };
 
-export const ddbWrite = (table: string, item: any, ConditionExpression: string): Promise<void> => {
-  return new Promise<void>(async (resolve, reject) => {
+export const ddbWrite = async (table: string, item: any): Promise<void> => {
+  try {
+    console.debug('Writing item to DDB');
+    const ddbDocClient = await getDDBDocItem();
+    console.debug('Got DDB Doc Client');
     try {
-      console.log('Writing item to DDB');
-      const ddbDocClient = await getDDBDocItem();
-
-      await ddbDocClient.send(new PutCommand({
-        TableName: table, Item: item,
-        ConditionExpression, ExpressionAttributeNames: { '#user_id': 'user_id', '#name': 'name' }
-      }));
-
-      resolve();
+      await ddbDocClient.send(
+        new PutCommand({
+          TableName: table,
+          Item: item
+        })
+      );
+      console.debug('DDB Write complete');
     } catch (error) {
-      reject(error);
+      console.error('Error writing to DDB', error);
+      throw error;
     }
-  });
-};
-
-// DDb Delete Item
-export const ddbDelete = (table: string, email: any): Promise<void> => {
-  return new Promise<void>(async (resolve, reject) => {
-    try {
-      console.log('Deleting item from DDB');
-      const ddbDocClient = await getDDBDocItem();
-
-      await ddbDocClient.send(new DeleteCommand({ TableName: table, Key: { email } }));
-
-      resolve();
-    } catch (error) {
-      reject(error);
-    }
-  });
+  } catch (error) {
+    console.error('Error getting DDB Doc Client', error);
+    throw error;
+  }
 };
