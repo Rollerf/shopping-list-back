@@ -25,19 +25,11 @@ export const getLambdaDefinitions = (context: CDKContext, userPool?: UserPool): 
       },
     },
     {
-      name: 'add-items',
+      name: 'put-item',
       environment,
       api: {
         path: '/items',
-        methods: [HttpMethod.POST],
-      },
-    },
-    {
-      name: 'update-items',
-      environment,
-      api: {
-        path: '/items',
-        methods: [HttpMethod.PATCH],
+        methods: [HttpMethod.PUT],
       },
     },
     {
